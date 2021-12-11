@@ -1,0 +1,17 @@
+# Byte-Track Integration with Deepstream
+Integrating Byte-Track C++ code with the Deepstream.
+
+## Build Instructions
+```
+$mkdir build && cd build  
+
+$cmake ..  
+
+$make DNTracker  
+```
+
+This will create ./lib/libDNTracker.so file which can be passed as the custom low level tracker library to deepstream.
+
+## References
+1. [How to Implement a Custom Low-Level Tracker Library in Deepstream](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_plugin_gst-nvtracker.html#how-to-implement-a-custom-low-level-tracker-library)
+2. [Byte-Track](https://github.com/ifzhang/ByteTrack)

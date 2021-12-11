@@ -7,10 +7,10 @@ $mkdir build && cd build
 
 $cmake ..  
 
-$make DNTracker  
+$make ByteTracker  
 ```
 
-This will create ./lib/libDNTracker.so file which can be passed as the custom low level tracker library to deepstream.
+This will create ./lib/libByteTracker.so file which can be passed as the custom low level tracker library to deepstream.
 
 ## References
 1. [How to Implement a Custom Low-Level Tracker Library in Deepstream](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_plugin_gst-nvtracker.html#how-to-implement-a-custom-low-level-tracker-library)

@@ -2,8 +2,8 @@
 // Created by Mayur Kulkarni on 11/11/21.
 //
 
-#ifndef DNSTARPROD_DSTRACKER_H
-#define DNSTARPROD_DSTRACKER_H
+#ifndef BYTETRACK_DSTRACKER_H
+#define BYTETRACK_DSTRACKER_H
 
 #include "nvdstracker.h"
 #include "BYTETracker.h"
@@ -62,4 +62,4 @@ protected:
     std::shared_ptr<BYTETracker> byteTracker;
 };
 
-#endif //DNSTARPROD_DSTRACKER_H
+#endif //BYTETRACK_DSTRACKER_H

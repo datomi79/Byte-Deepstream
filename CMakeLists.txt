@@ -21,5 +21,5 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC")
 set(CMAKE_CUDA_FLAGS "--compiler-options -fPIC")
 
 link_directories(${DS_LIBS_DIR})
-add_library(DNTracker SHARED ${TRACK})
-target_link_libraries(DNTracker nvds_meta)
+add_library(ByteTracker SHARED ${TRACK})
+target_link_libraries(ByteTracker nvds_meta)

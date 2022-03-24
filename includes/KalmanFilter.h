@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dataType.h"
+#include "DataType.h"
 
 namespace byte_kalman {
     class KalmanFilter {

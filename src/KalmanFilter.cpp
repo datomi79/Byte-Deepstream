@@ -1,4 +1,4 @@
-#include "kalmanFilter.h"
+#include "KalmanFilter.h"
 #include <eigen3/Eigen/Cholesky>
 
 namespace byte_kalman {

@@ -1,8 +1,10 @@
 #include "STrack.h"
 
-STrack::STrack(vector<float> tlwh_, float score, NvMOTObjToTrack *associatedObjectIn, int label) {
+STrack::STrack(vector<float> tlwh_, float score, int label, NvMOTObjToTrack *associatedObjectIn) {
     _tlwh.resize(4);
     _tlwh.assign(tlwh_.begin(), tlwh_.end());
+    original_tlwh.resize(4);
+    original_tlwh.assign(tlwh_.begin(), tlwh_.end());
 
     is_activated = false;
     track_id     = 0;
@@ -17,8 +19,8 @@ STrack::STrack(vector<float> tlwh_, float score, NvMOTObjToTrack *associatedObje
     tracklet_len = 0;
     this->score = score;
     start_frame = 0;
-    this->associatedObjectIn = associatedObjectIn;
     this->label              = label;
+    this->associatedObjectIn = associatedObjectIn;
 }
 
 STrack::~STrack() {
@@ -70,11 +72,14 @@ void STrack::re_activate(STrack &new_track, int frame_id, bool new_id) {
     static_tlwh();
     static_tlbr();
 
-    this->tracklet_len = 0;
-    this->state        = TrackState::Tracked;
-    this->is_activated = true;
-    this->frame_id     = frame_id;
-    this->score        = new_track.score;
+    this->tracklet_len       = 0;
+    this->state              = TrackState::Tracked;
+    this->is_activated       = true;
+    this->frame_id           = frame_id;
+    this->score              = new_track.score;
+    this->associatedObjectIn = new_track.associatedObjectIn;
+    this->original_tlwh.resize(4);
+    this->original_tlwh.assign(new_track.original_tlwh.begin(), new_track.original_tlwh.end());
     if (new_id)
         this->track_id = next_id();
 }
@@ -97,10 +102,12 @@ void STrack::update(STrack &new_track, int frame_id) {
     static_tlwh();
     static_tlbr();
 
-    this->state        = TrackState::Tracked;
-    this->is_activated = true;
-
-    this->score = new_track.score;
+    this->state              = TrackState::Tracked;
+    this->is_activated       = true;
+    this->score              = new_track.score;
+    this->associatedObjectIn = new_track.associatedObjectIn;
+    this->original_tlwh.resize(4);
+    this->original_tlwh.assign(new_track.original_tlwh.begin(), new_track.original_tlwh.end());
 }
 
 void STrack::static_tlwh() {

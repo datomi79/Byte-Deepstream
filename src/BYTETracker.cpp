@@ -32,24 +32,23 @@ vector<STrack> BYTETracker::update(const vector<NvObject> &nvObjects) {
     vector<STrack *> strack_pool;
     vector<STrack *> r_tracked_stracks;
 
+
     if (nvObjects.size() > 0) {
         for (int i = 0; i < nvObjects.size(); i++) {
-            vector<float> tlbr_;
-            tlbr_.resize(4);
-            tlbr_[0] = nvObjects[i].object.rect.x;
-            tlbr_[1] = nvObjects[i].object.rect.y;
-            tlbr_[2] = nvObjects[i].object.rect.x + nvObjects[i].object.rect.width;
-            tlbr_[3] = nvObjects[i].object.rect.y + nvObjects[i].object.rect.height;
-            float score = nvObjects[i].object.prob;
+            vector<float> tlwh_;
+            tlwh_.resize(4);
+            tlwh_[0] = nvObjects[i].rect[0];
+            tlwh_[1] = nvObjects[i].rect[1];
+            tlwh_[2] = nvObjects[i].rect[2];
+            tlwh_[3] = nvObjects[i].rect[3];
+            float score = nvObjects[i].prob;
 
-            STrack strack(STrack::tlbr_to_tlwh(tlbr_), score, nvObjects[i].associatedObjectIn,
-                          nvObjects[i].object.label);
+            STrack strack(tlwh_, score, nvObjects[i].label, nvObjects[i].associatedObjectIn);
             if (score >= track_thresh) {
                 detections.push_back(strack);
             } else {
                 detections_low.push_back(strack);
             }
-
         }
     }
 
@@ -60,6 +59,7 @@ vector<STrack> BYTETracker::update(const vector<NvObject> &nvObjects) {
         else
             tracked_stracks.push_back(&this->tracked_stracks[i]);
     }
+
 
     ////////////////// Step 2: First association, with IoU //////////////////
     strack_pool                     = joint_stracks(tracked_stracks, this->lost_stracks);
@@ -84,9 +84,6 @@ vector<STrack> BYTETracker::update(const vector<NvObject> &nvObjects) {
             refind_stracks.push_back(*track);
         }
     }
-
-//    std::cout << "Activated: " << activated_stracks.size() << std::endl;
-//    std::cout << "Refind: " << refind_stracks.size() << std::endl;
 
     ////////////////// Step 3: Second association, using low score dets //////////////////
     for (int i = 0; i < u_detection.size(); i++) {
@@ -205,5 +202,14 @@ vector<STrack> BYTETracker::update(const vector<NvObject> &nvObjects) {
         }
     }
 
-    return output_stracks;
+    // clean up old objects
+    vector<STrack > filtered_output_stracks;
+    std::copy_if(output_stracks.begin(),
+                 output_stracks.end(),
+                 std::back_inserter(filtered_output_stracks),
+                 [](STrack track) {
+                     return track.associatedObjectIn != NULL &&
+                            track.associatedObjectIn->classId == 0;
+                 });
+    return filtered_output_stracks;
 }

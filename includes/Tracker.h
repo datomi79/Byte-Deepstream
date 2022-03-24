@@ -2,8 +2,8 @@
 // Created by Mayur Kulkarni on 11/11/21.
 //
 
-#ifndef BYTETRACK_DSTRACKER_H
-#define BYTETRACK_DSTRACKER_H
+#ifndef DNSTARPROD_TRACKER_H
+#define DNSTARPROD_TRACKER_H
 
 #include "nvdstracker.h"
 #include "BYTETracker.h"
@@ -59,7 +59,7 @@ protected:
      * Users can include an actual tracker implementation here as a member
      * `IMultiObjectTracker` can be assumed to an user-defined interface class
      */
-    std::shared_ptr<BYTETracker> byteTracker;
+    std::map<uint64_t, std::shared_ptr<BYTETracker>> byteTrackerMap;
 };
 
-#endif //BYTETRACK_DSTRACKER_H
+#endif //DNSTARPROD_TRACKER_H

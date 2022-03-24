@@ -1,10 +1,7 @@
 #pragma once
-
-#include <opencv2/opencv.hpp>
 #include <nvdstracker.h>
-#include "kalmanFilter.h"
+#include "KalmanFilter.h"
 
-using namespace cv;
 using namespace std;
 
 enum TrackState {
@@ -13,7 +10,7 @@ enum TrackState {
 
 class STrack {
 public:
-    STrack(vector<float> tlwh_, float score, NvMOTObjToTrack *associatedObjectIn, int label);
+    STrack(vector<float> tlwh_, float score, int label, NvMOTObjToTrack *associatedObjectIn);
 
     ~STrack();
 
@@ -48,6 +45,7 @@ public:
     int  track_id;
     int  state;
 
+    vector<float> original_tlwh;
     vector<float> _tlwh;
     vector<float> tlwh;
     vector<float> tlbr;
@@ -55,7 +53,6 @@ public:
     int           tracklet_len;
     int           start_frame;
     int           label;
-
     KAL_MEAN        mean;
     KAL_COVA        covariance;
     float           score;

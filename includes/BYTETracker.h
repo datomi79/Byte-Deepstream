@@ -1,8 +1,19 @@
 #pragma once
 
 #include "STrack.h"
-#include "trackerUtils.h"
+#include "BYTETracker.h"
+#include "nvdstracker.h"
+#include <map>
+#include "DataType.h"
+#include <iostream>
 
+class NvObject {
+public:
+    float rect[4];
+    int   label;
+    float prob;
+    NvMOTObjToTrack *associatedObjectIn;
+};
 
 class BYTETracker {
 public:
@@ -11,8 +22,6 @@ public:
     ~BYTETracker();
 
     vector<STrack> update(const vector<NvObject> &nvObjects);
-
-    Scalar get_color(int idx);
 
 private:
     vector<STrack *> joint_stracks(vector<STrack *> &tlista, vector<STrack> &tlistb);
@@ -28,12 +37,11 @@ private:
                            float thresh,
                            vector<vector<int> > &matches, vector<int> &unmatched_a, vector<int> &unmatched_b);
 
-    vector<vector<float> >
-    iou_distance(vector<STrack *> &atracks, vector<STrack> &btracks, int &dist_size, int &dist_size_size);
+    vector<vector<float>>iou_distance(vector<STrack *> &atracks, vector<STrack> &btracks, int &dist_size, int &dist_size_size);
 
-    vector<vector<float> > iou_distance(vector<STrack> &atracks, vector<STrack> &btracks);
+    vector<vector<float>> iou_distance(vector<STrack> &atracks, vector<STrack> &btracks);
 
-    vector<vector<float> > ious(vector<vector<float> > &atlbrs, vector<vector<float> > &btlbrs);
+    vector<vector<float>> ious(vector<vector<float> > &atlbrs, vector<vector<float> > &btlbrs);
 
     double lapjv(const vector<vector<float> > &cost, vector<int> &rowsol, vector<int> &colsol,
                  bool extend_cost = false, float cost_limit = LONG_MAX, bool return_cost = true);

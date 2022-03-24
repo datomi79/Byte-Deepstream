@@ -1,5 +1,6 @@
 #include "BYTETracker.h"
-#include "lapjv.h"
+#include "Lapjv.h"
+#include "STrack.h"
 
 vector<STrack *> BYTETracker::joint_stracks(vector<STrack *> &tlista, vector <STrack> &tlistb) {
     map<int, int> exists;
@@ -19,7 +20,7 @@ vector<STrack *> BYTETracker::joint_stracks(vector<STrack *> &tlista, vector <ST
 }
 
 vector <STrack> BYTETracker::joint_stracks(vector <STrack> &tlista, vector <STrack> &tlistb) {
-    map<int, int>   exists;
+    std::map<int, int>   exists;
     vector <STrack> res;
     for (int        i = 0; i < tlista.size(); i++) {
         exists.insert(pair<int, int>(tlista[i].track_id, 1));
@@ -298,7 +299,7 @@ double BYTETracker::lapjv(const vector <vector<float>> &cost, vector<int> &rowso
 
     int ret = lapjv_internal(n, cost_ptr, x_c, y_c);
     if (ret != 0) {
-        cout << "Calculate Wrong!" << endl;
+        std::cout << "Calculate Wrong!" << endl;
         system("pause");
         exit(0);
     }
@@ -341,9 +342,4 @@ double BYTETracker::lapjv(const vector <vector<float>> &cost, vector<int> &rowso
     delete[]y_c;
 
     return opt;
-}
-
-Scalar BYTETracker::get_color(int idx) {
-    idx += 3;
-    return Scalar(37 * idx % 255, 17 * idx % 255, 29 * idx % 255);
 }

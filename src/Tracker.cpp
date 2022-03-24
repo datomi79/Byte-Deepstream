@@ -1,4 +1,4 @@
-#include "DsTracker.h"
+#include "Tracker.h"
 #include <iostream>
 
 NvMOTStatus NvMOT_Query(uint16_t customConfigFilePathSize,
@@ -21,12 +21,13 @@ NvMOTStatus NvMOT_Query(uint16_t customConfigFilePathSize,
 #endif
 
     pQuery->supportBatchProcessing = false;    // set NvMOTBatchMode_Batch if the low-level tracker supports batch processing mode. Otherwise, NvMOTBatchMode_NonBatch
-    pQuery->supportPastFrame       = false;             // set true if the low-level tracker supports the past-frame data or not
+    pQuery->supportPastFrame       = false;    // set true if the low-level tracker supports the past-frame data or not
 
     /**
      * return NvMOTStatus_Error if something is wrong
      * return NvMOTStatus_OK if everything went well
      */
+    std::cout << "[BYTETrack Initialized]" << std::endl;
     return NvMOTStatus_OK;
 }
 
@@ -56,7 +57,6 @@ NvMOTStatus NvMOT_Init(NvMOTConfig *pConfigIn,
 
 void NvMOT_DeInit(NvMOTContextHandle contextHandle) {
     /// Destroy the context handle
-    std::cout << "DeInit handle called" << std::endl;
     delete contextHandle;
 }
 
@@ -65,12 +65,6 @@ NvMOTStatus NvMOT_Process(NvMOTContextHandle contextHandle,
                           NvMOTTrackedObjBatch *pTrackedObjectsBatch) {
     /// Process the given video frame using the user-defined method in the context, and generate outputs
     contextHandle->processFrame(pParams, pTrackedObjectsBatch);
-//    std::cout << "Num filled (processed): " << pTrackedObjectsBatch->list->numFilled << std::endl;
-    /**
-     * return NvMOTStatus_Error if something is wrong
-     * return NvMOTStatus_OK if everything went well
-     */
-//    std::cout << "Is it valid: " << pTrackedObjectsBatch->list->valid << std::endl;
     return NvMOTStatus_OK;
 }
 

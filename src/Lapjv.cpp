@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lapjv.h"
+#include "Lapjv.h"
 
 /** Column-reduction and reduction transfer for a dense cost matrix.
  */
@@ -23,11 +23,11 @@ int_t _ccrrt_dense(const uint_t n, cost_t *cost[],
                 v[j] = c;
                 y[j] = i;
             }
-            // PRINTF("i=%d, j=%d, c[i,j]=%f, v[j]=%f y[j]=%d\n", i, j, c, v[j], y[j]);
+            PRINTF("i=%d, j=%d, c[i,j]=%f, v[j]=%f y[j]=%d\n", i, j, c, v[j], y[j]);
         }
     }
-    // PRINT_COST_ARRAY(v, n);
-    // PRINT_INDEX_ARRAY(y, n);
+    PRINT_COST_ARRAY(v, n);
+    PRINT_INDEX_ARRAY(y, n);
     NEW(unique, boolean, n);
     memset(unique, TRUE, n);
     {
@@ -59,7 +59,7 @@ int_t _ccrrt_dense(const uint_t n, cost_t *cost[],
                     min = c;
                 }
             }
-            // PRINTF("v[%d] = %f - %f\n", j, v[j], min);
+            PRINTF("v[%d] = %f - %f\n", j, v[j], min);
             v[j] -= min;
         }
     }
@@ -77,10 +77,10 @@ int_t _carr_dense(
     uint_t current       = 0;
     int_t  new_free_rows = 0;
     uint_t rr_cnt        = 0;
-    // PRINT_INDEX_ARRAY(x, n);
-    // PRINT_INDEX_ARRAY(y, n);
-    // PRINT_COST_ARRAY(v, n);
-    // PRINT_INDEX_ARRAY(free_rows, n_free_rows);
+    PRINT_INDEX_ARRAY(x, n);
+    PRINT_INDEX_ARRAY(y, n);
+    PRINT_COST_ARRAY(v, n);
+    PRINT_INDEX_ARRAY(free_rows, n_free_rows);
     while (current < n_free_rows) {
         int_t   i0;
         int_t   j1, j2;
@@ -88,14 +88,14 @@ int_t _carr_dense(
         boolean v1_lowers;
 
         rr_cnt++;
-        // PRINTF("current = %d rr_cnt = %d\n", current, rr_cnt);
+        PRINTF("current = %d rr_cnt = %d\n", current, rr_cnt);
         const int_t free_i = free_rows[current++];
         j1 = 0;
         v1 = cost[free_i][0] - v[0];
         j2 = -1;
         v2 = LARGE;
         for (uint_t j = 1; j < n; j++) {
-            // PRINTF("%d = %f %d = %f\n", j1, v1, j2, v2);
+            PRINTF("%d = %f %d = %f\n", j1, v1, j2, v2);
             const cost_t c = cost[free_i][j] - v[j];
             if (c < v2) {
                 if (c >= v1) {
@@ -112,7 +112,7 @@ int_t _carr_dense(
         i0            = y[j1];
         v1_new        = v[j1] - (v2 - v1);
         v1_lowers     = v1_new < v[j1];
-        // PRINTF("%d %d 1=%d,%f 2=%d,%f v1'=%f(%d,%g) \n", free_i, i0, j1, v1, j2, v2, v1_new, v1_lowers, v[j1] - v1_new);
+        PRINTF("%d %d 1=%d,%f 2=%d,%f v1'=%f(%d,%g) \n", free_i, i0, j1, v1, j2, v2, v1_new, v1_lowers, v[j1] - v1_new);
         if (rr_cnt < current * n) {
             if (v1_lowers) {
                 v[j1] = v1_new;
@@ -128,7 +128,7 @@ int_t _carr_dense(
                 }
             }
         } else {
-            // PRINTF("rr_cnt=%d >= %d (current=%d * n=%d)\n", rr_cnt, current * n, current, n);
+            PRINTF("rr_cnt=%d >= %d (current=%d * n=%d)\n", rr_cnt, current * n, current, n);
             if (i0 >= 0) {
                 free_rows[new_free_rows++] = i0;
             }
@@ -175,7 +175,7 @@ int_t _scan_dense(const uint_t n, cost_t *cost[],
         const int_t  i    = y[j];
         const cost_t mind = d[j];
         h = cost[i][j] - v[j] - mind;
-        // PRINTF("i=%d j=%d h=%f\n", i, j, h);
+        PRINTF("i=%d j=%d h=%f\n", i, j, h);
         // For all columns in TODO
         for (uint_t k = hi; k < n; k++) {
             j       = cols[k];
@@ -224,15 +224,15 @@ int_t find_path_dense(
         pred[i] = start_i;
         d[i]    = cost[start_i][i] - v[i];
     }
-    // PRINT_COST_ARRAY(d, n);
+    PRINT_COST_ARRAY(d, n);
     while (final_j == -1) {
         // No columns left on the SCAN list.
         if (lo == hi) {
-            // PRINTF("%d..%d -> find\n", lo, hi);
+            PRINTF("%d..%d -> find\n", lo, hi);
             n_ready = lo;
             hi      = _find_dense(n, lo, d, cols, y);
-            // PRINTF("check %d..%d\n", lo, hi);
-            // PRINT_INDEX_ARRAY(cols, n);
+            PRINTF("check %d..%d\n", lo, hi);
+            PRINT_INDEX_ARRAY(cols, n);
             for (uint_t k = lo; k < hi; k++) {
                 const int_t j = cols[k];
                 if (y[j] < 0) {
@@ -241,17 +241,17 @@ int_t find_path_dense(
             }
         }
         if (final_j == -1) {
-            // PRINTF("%d..%d -> scan\n", lo, hi);
+            PRINTF("%d..%d -> scan\n", lo, hi);
             final_j = _scan_dense(
                     n, cost, &lo, &hi, d, cols, pred, y, v);
-            // PRINT_COST_ARRAY(d, n);
-            // PRINT_INDEX_ARRAY(cols, n);
-            // PRINT_INDEX_ARRAY(pred, n);
+            PRINT_COST_ARRAY(d, n);
+            PRINT_INDEX_ARRAY(cols, n);
+            PRINT_INDEX_ARRAY(pred, n);
         }
     }
 
-    // PRINTF("found final_j=%d\n", final_j);
-    // PRINT_INDEX_ARRAY(cols, n);
+    PRINTF("found final_j=%d\n", final_j);
+    PRINT_INDEX_ARRAY(cols, n);
     {
         const cost_t mind = d[cols[lo]];
         for (uint_t  k    = 0; k < n_ready; k++) {
@@ -281,17 +281,17 @@ int_t _ca_dense(
         int_t  i = -1, j;
         uint_t k = 0;
 
-        // PRINTF("looking at free_i=%d\n", *pfree_i);
+        PRINTF("looking at free_i=%d\n", *pfree_i);
         j = find_path_dense(n, cost, *pfree_i, y, v, pred);
         ASSERT(j >= 0);
         ASSERT(j < n);
         while (i != *pfree_i) {
-            // PRINTF("augment %d\n", j);
-            // PRINT_INDEX_ARRAY(pred, n);
+            PRINTF("augment %d\n", j);
+            PRINT_INDEX_ARRAY(pred, n);
             i = pred[j];
-            // PRINTF("y[%d]=%d -> %d\n", j, y[j], i);
+            PRINTF("y[%d]=%d -> %d\n", j, y[j], i);
             y[j] = i;
-            // PRINT_INDEX_ARRAY(x, n);
+            PRINT_INDEX_ARRAY(x, n);
             SWAP_INDICES(j, x[i]);
             k++;
             if (k >= n) {
